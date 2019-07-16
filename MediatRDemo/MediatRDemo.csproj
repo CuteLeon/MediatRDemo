@@ -58,6 +58,8 @@
     <Compile Include="Multicast\YourQuotaReceiver.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnicastWithoutReply\DriftingBottle.cs" />
+    <Compile Include="UnicastWithoutReply\DriftingBottleHandler.cs" />
     <Compile Include="Unicast\PingRequest.cs" />
     <Compile Include="Unicast\PingRequestHandler.cs" />
     <Compile Include="Unicast\PongResponse.cs" />

@@ -8,6 +8,7 @@ using MediatR;
 using MediatR.Pipeline;
 using MediatRDemo.Multicast;
 using MediatRDemo.Unicast;
+using MediatRDemo.UnicastWithoutReply;
 
 namespace MediatRDemo
 {
@@ -94,6 +95,13 @@ namespace MediatRDemo
                 .ToList();
 
             Console.WriteLine(string.Join("\n", behaviors.Select(be => be.GetType().Name)));
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            _ = this.mediator
+                .Send(new DriftingBottle($"漂流瓶-{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")}"))
+                .Result;
         }
     }
 }
