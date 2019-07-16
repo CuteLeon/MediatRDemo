@@ -14,7 +14,7 @@ namespace MediatRDemo
     {
         public DemoForm()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
     }
 }
