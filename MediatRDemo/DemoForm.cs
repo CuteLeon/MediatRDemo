@@ -59,11 +59,17 @@ namespace MediatRDemo
             // 注册 IMediator
             builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
 
-            // 注册单播类型
+            // 自动注册程序集内中介者相关类型 (如果包含在同一程序集，仅注册这里一次即可)
+            builder.RegisterAssemblyTypes(typeof(DriftingBottle).Assembly)
+                .AsImplementedInterfaces();
+
+            // 显示注册单播类型
             builder.RegisterAssemblyTypes(typeof(PingRequest).Assembly, typeof(PongResponse).Assembly)
                 .AsClosedTypesOf(typeof(IRequestHandler<,>))
                 .AsImplementedInterfaces();
-            builder.RegisterAssemblyTypes(typeof(PingRequest).Assembly)
+
+            // 显示注册多播类型
+            builder.RegisterAssemblyTypes(typeof(Quota).Assembly)
                 .AsClosedTypesOf(typeof(INotificationHandler<>))
                 .AsImplementedInterfaces();
 
