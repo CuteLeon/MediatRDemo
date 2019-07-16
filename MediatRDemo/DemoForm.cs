@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using Autofac;
@@ -12,13 +14,21 @@ namespace MediatRDemo
     public partial class DemoForm : Form
     {
         /// <summary>
+        /// 服务容器
+        /// </summary>
+        IContainer container = null;
+
+        /// <summary>
         /// 中介者
         /// </summary>
-        IMediator mediator = BuildMediator();
+        IMediator mediator = null;
 
         public DemoForm()
         {
             this.InitializeComponent();
+
+            this.container = this.BuilderContainer();
+            this.mediator = this.BuildMediator();
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -30,11 +40,18 @@ namespace MediatRDemo
             Console.WriteLine(response.Message);
         }
 
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            this.mediator
+                .Publish(new Quota(DateTime.Now.Ticks / 10000.0))
+                .Wait();
+        }
+
         /// <summary>
-        /// 创建中介者
+        ///创建服务容器
         /// </summary>
         /// <returns></returns>
-        private static IMediator BuildMediator()
+        private IContainer BuilderContainer()
         {
             var builder = new ContainerBuilder();
 
@@ -60,22 +77,23 @@ namespace MediatRDemo
                 return t => c.Resolve(t);
             });
 
-            var container = builder.Build();
-
-            //var behaviors = container
-            //    .Resolve<IEnumerable<IPipelineBehavior<PingRequest, PongResponse>>>()
-            //    .ToList();
-
-            var mediator = container.Resolve<IMediator>();
-
-            return mediator;
+            return builder.Build();
         }
 
-        private void Button2_Click(object sender, EventArgs e)
+        /// <summary>
+        /// 创建中介者
+        /// </summary>
+        /// <returns></returns>
+        private IMediator BuildMediator()
+            => this.container.Resolve<IMediator>();
+
+        private void Button3_Click(object sender, EventArgs e)
         {
-            this.mediator
-                .Publish(new Quota(DateTime.Now.Ticks / 10000.0))
-                .Wait();
+            var behaviors = this.container
+                .Resolve<IEnumerable<IPipelineBehavior<PingRequest, PongResponse>>>()
+                .ToList();
+
+            Console.WriteLine(string.Join("\n", behaviors.Select(be => be.GetType().Name)));
         }
     }
 }
