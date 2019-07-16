@@ -63,6 +63,8 @@ namespace MediatRDemo
             builder.RegisterAssemblyTypes(typeof(DriftingBottle).Assembly)
                 .AsImplementedInterfaces();
 
+            /* 上面已经注册，此处将重复注册
+            
             // 显示注册单播类型
             builder.RegisterAssemblyTypes(typeof(PingRequest).Assembly, typeof(PongResponse).Assembly)
                 .AsClosedTypesOf(typeof(IRequestHandler<,>))
@@ -72,6 +74,7 @@ namespace MediatRDemo
             builder.RegisterAssemblyTypes(typeof(Quota).Assembly)
                 .AsClosedTypesOf(typeof(INotificationHandler<>))
                 .AsImplementedInterfaces();
+             */
 
             // 注册处理行为
             builder.RegisterGeneric(typeof(RequestPostProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
