@@ -41,19 +41,13 @@ namespace MediatRDemo
             // 注册 IMediator
             builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
 
-            // 将开放类型注册为封闭类型
-            var mediatrOpenTypes = new[]
-            {
-                typeof(IRequestHandler<,>),
-                typeof(INotificationHandler<>),
-            };
-            foreach (var mediatrOpenType in mediatrOpenTypes)
-            {
-                builder
-                    .RegisterAssemblyTypes(typeof(PingRequest).GetTypeInfo().Assembly)
-                    .AsClosedTypesOf(mediatrOpenType)
-                    .AsImplementedInterfaces();
-            }
+            // 注册单播类型
+            builder.RegisterAssemblyTypes(typeof(PingRequest).Assembly, typeof(PongResponse).Assembly)
+                .AsClosedTypesOf(typeof(IRequestHandler<,>))
+                .AsImplementedInterfaces();
+            builder.RegisterAssemblyTypes(typeof(PingRequest).Assembly)
+                .AsClosedTypesOf(typeof(INotificationHandler<>))
+                .AsImplementedInterfaces();
 
             // 注册处理行为
             builder.RegisterGeneric(typeof(RequestPostProcessorBehavior<,>)).As(typeof(IPipelineBehavior<,>));
